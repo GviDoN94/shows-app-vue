@@ -3,11 +3,30 @@
   import CardItem from './CardItem.vue';
   import { ref } from 'vue';
 
+  const API_URL = 'https://www.theboysapi.com/api/character';
+
   const characters = ref(null);
+  const nextPageUrl = ref(null);
+  const prevPageUrl = ref(null);
 
-  const response = await axios.get('https://www.theboysapi.com/api/character');
+  const fetchData = async (url) => {
+    try {
+      const response = await axios.get(url);
+      characters.value = response.data.results;
+      nextPageUrl.value = response.data.next;
+      prevPageUrl.value = response.data.prev;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
-  characters.value = response.data.results;
+  const getNextOrPrevPage = async (url) => {
+    if (url) {
+      fetchData(url);
+    }
+  };
+
+  fetchData(API_URL);
 </script>
 
 <template>
@@ -19,6 +38,20 @@
         :image="character.image"
         :name="character.name"
       />
+    </div>
+    <div class="button-container">
+      <button
+        v-show="prevPageUrl"
+        @click="getNextOrPrevPage(prevPageUrl)"
+      >
+        &lt;
+      </button>
+      <button
+        v-show="nextPageUrl"
+        @click="getNextOrPrevPage(nextPageUrl)"
+      >
+        >
+      </button>
     </div>
   </div>
 </template>
@@ -33,7 +66,6 @@
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
-    height: 700px;
   }
   .cards h3 {
     font-weight: bold;

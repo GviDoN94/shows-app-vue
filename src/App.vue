@@ -1,6 +1,6 @@
 <script setup>
   import BoysCards from '@/components/BoysCards.vue';
-  import RickMortyCards from './components/RickMortyCards.vue';
+  import RickMortyCards from '@/components/RickMortyCards.vue';
 </script>
 
 <template>

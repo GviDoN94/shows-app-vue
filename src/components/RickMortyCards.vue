@@ -1,9 +1,10 @@
 <script setup>
   import axios from 'axios';
   import CardItem from './CardItem.vue';
-  import { onMounted, ref } from 'vue';
+  import { onMounted, ref, watch } from 'vue';
 
   const characters = ref(null);
+  const page = ref(1);
 
   onMounted(async () => {
     const response = await axios.get(
@@ -11,7 +12,14 @@
     );
 
     characters.value = response.data.results;
-    console.log(characters.value);
+  });
+
+  watch(page, async () => {
+    const response = await axios.get(
+      `https://rickandmortyapi.com/api/character/?page=${page.value}`,
+    );
+    console.log(response);
+    characters.value = response.data.results;
   });
 </script>
 
@@ -24,6 +32,10 @@
         :image="character.image"
         :name="character.name"
       />
+    </div>
+    <div class="button-container">
+      <button @click="page--">&lt;</button>
+      <button @click="page++">></button>
     </div>
   </div>
 </template>
