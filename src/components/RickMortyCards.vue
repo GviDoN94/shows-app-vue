@@ -1,6 +1,6 @@
 <script setup>
   import axios from 'axios';
-  import CardItem from './CardItem.vue';
+  import CardItem from '@/components/CardItem.vue';
   import { onMounted, ref, watch } from 'vue';
 
   const characters = ref(null);
@@ -18,20 +18,30 @@
     const response = await axios.get(
       `https://rickandmortyapi.com/api/character/?page=${page.value}`,
     );
-    console.log(response);
     characters.value = response.data.results;
   });
 </script>
 
 <template>
   <div class="container">
-    <div class="cards">
+    <div
+      v-if="characters"
+      class="cards"
+    >
       <CardItem
         v-for="character in characters"
         :key="character.id"
         :image="character.image"
         :name="character.name"
-      />
+      >
+        <p>{{ character.location.name }}</p>
+      </CardItem>
+    </div>
+    <div
+      v-else
+      class="cards spinner"
+    >
+      <NSpin size="large" />
     </div>
     <div class="button-container">
       <button @click="page--">&lt;</button>
@@ -47,6 +57,7 @@
   }
   .cards {
     max-width: 1000px;
+    min-height: 700px;
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;

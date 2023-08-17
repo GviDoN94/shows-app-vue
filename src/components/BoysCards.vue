@@ -1,6 +1,6 @@
 <script setup>
   import axios from 'axios';
-  import CardItem from './CardItem.vue';
+  import CardItem from '@/components/CardItem.vue';
   import { ref } from 'vue';
 
   const API_URL = 'https://www.theboysapi.com/api/character';
@@ -15,6 +15,7 @@
       characters.value = response.data.results;
       nextPageUrl.value = response.data.next;
       prevPageUrl.value = response.data.prev;
+      console.log(response);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -31,13 +32,24 @@
 
 <template>
   <div class="container">
-    <div class="cards">
+    <div
+      v-if="characters"
+      class="cards"
+    >
       <CardItem
         v-for="character in characters"
         :key="character.id"
         :image="character.image"
         :name="character.name"
-      />
+      >
+        <p>{{ character.real_name }}</p>
+      </CardItem>
+    </div>
+    <div
+      v-else
+      class="cards spinner"
+    >
+      <NSpin size="large" />
     </div>
     <div class="button-container">
       <button
@@ -63,6 +75,7 @@
   }
   .cards {
     max-width: 1000px;
+    min-height: 700px;
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
@@ -73,10 +86,7 @@
   .cards p {
     font-size: 10px;
   }
-  .jobs {
-    display: flex;
-    flex-wrap: wrap;
-  }
+
   .button-container {
     display: flex;
     justify-content: center;
